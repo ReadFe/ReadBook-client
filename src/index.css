@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.order-grid{
+    display: grid;
+    grid-template-columns: 40% 20% 25% 15%;
+}
+
+.address-grid {
+    display: grid;
+    grid-template-columns: 40% 60%;
+}
+
+.sel-address-grid {
+    display: grid;
+    grid-template-columns: 5% 35% 60%;
+}
+
+.fade-in {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+.fade-out {
+    opacity: 1;
+}
+
