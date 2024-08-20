@@ -1,11 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion'; // Untuk animasi
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { fetchCart } from '../../route/slice';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const ProductDetail = ({isModal, onClose, product}) => {
     const [cart, setCart] = useState([]);
     const API_URL_CART = 'http://localhost:3000/api/cart';
     const API_ACCESS_TOKEN = localStorage.getItem('token');
+
+    const dispatch = useDispatch();
+
+    const handleCartChange = (product) => {
+        setCart([...cart, {product}]);
+        toast('item has been successfully added', {
+            autoClose: 2000
+        });
+        onClose();
+    }
+
 
     const handleCart = async () => {
         try {
@@ -14,8 +30,9 @@ const ProductDetail = ({isModal, onClose, product}) => {
                     'Authorization': `Bearer ${API_ACCESS_TOKEN}`
                 }
             }); 
+            dispatch(fetchCart(API_ACCESS_TOKEN))
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
     }
 
@@ -63,7 +80,7 @@ const ProductDetail = ({isModal, onClose, product}) => {
                         className="bg-main-color text-white px-4 py-2 rounded shadow-md transition-transform transform hover:scale-105"
                         whileHover={{ scale: 1.1 }}
                         transition={{ duration: 0.2 }}
-                        onClick={() => setCart([...cart, {product}])}
+                        onClick={() => handleCartChange(product)}
                     >
                         Add to Cart
                     </motion.button>

@@ -5,39 +5,31 @@ import Search from '../../assets/search.svg';
 import '../../App.css'
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCart } from '../../route/slice';
 
 const Navbar = ({input, category, filteredData, data, setShow}) => {
     const [token, setToken] = useState('');
-    const [cart, setCart] = useState([]);
     const [search, setSearch] = useState('');
     const [selTag, setSelTag] = useState('Kategori');
     const navigate = useNavigate();
 
-    const API_URL_CART = 'http://localhost:3000/api/cart';
-    const API_ACCESS_TOKEN = localStorage.getItem('token');
-    
+    const cartCounter = useSelector((state) => state.cart.count);
+    const dispatch = useDispatch();
+
     useEffect(() => {
         input(search);
     }, [search])
 
     useEffect(() => {
         getToken();
-        getCart();
-    }, [])
+        if(token) {
+            dispatch(fetchCart(token));
+        }
+    }, [token, cartCounter])
 
-    
 
-    const getCart = async () => {
-        const {data} = await axios.get(API_URL_CART, {
-            headers: {
-                'Authorization': `Bearer ${API_ACCESS_TOKEN}` 
-            }
-        })
-        setCart(data);
-    }
-
-    const cartNotifClass = `absolute top-0 right-0 p-1 bg-main-color text-[7px] rounded-full text-white ${ cart.length === 0 ? 'hidden' : 'block'}`
+    const cartNotifClass = `absolute top-0 right-0 p-1 bg-main-color text-[7px] rounded-full text-white ${ cartCounter === 0 ? 'hidden' : 'block'}`
     
     const getToken = () => {
         const result = localStorage.getItem('token');
@@ -70,7 +62,7 @@ const Navbar = ({input, category, filteredData, data, setShow}) => {
             </div>
             <div className='relative w-auto'>
                 <img src={Cart} alt="cart" className='p-2 mx-3 ml-5 hover:bg-gray-100 rounded-md cursor-pointer mr-5' onClick={() => { !token ? navigate('/login') : navigate('/cart') }}/>
-                <div className={cartNotifClass}> {cart.length} </div>
+                <div className={cartNotifClass}> {cartCounter} </div>
             </div>
             <img src={Profile} alt="profile" className='p-2 mx-3 hover:bg-gray-100 rounded-md cursor-pointer' 
                 onClick={() => { !token ? navigate('/login') : navigate('/dashboard/profile') }}/>

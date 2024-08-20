@@ -10,6 +10,7 @@ import { Autoplay, Navigation, Pagination } from 'swiper/modules'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import ProductDetail from '../productDetail'
+import { ToastContainer } from 'react-toastify'
 
 const Content = () => {
     const [data, setData] = useState([]); 
@@ -82,6 +83,7 @@ const Content = () => {
     return(
         <>
         <Navbar input={inputData} category={menuItems} filteredData={filteredData} data={data} setShow={setShow} count={cart}/>
+        <ToastContainer/>
         <div className="w-[80%] mx-auto"> 
             <div className="relative overflow-hidden">
             {/* <!-- Slider Wrapper --> */}
