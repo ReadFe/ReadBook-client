@@ -1,30 +1,22 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { formatToIDR } from "../../utils/formatToIDR";
+import { apiClient } from "../../utils/axios";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, fetchCart } from "../../store/counterCartSlice";
 
 const Cart = () => {
     const [data, setData] = useState([])
     const [sum, setSum] = useState()
-    const API_ACCESS_TOKEN = localStorage.getItem('token')
-    const API_CART = 'http://localhost:3000/api/cart'
     const buttonClass = `absolute bottom-3 right-2 bg-main-color text-white px-4 py-1 rounded ${data.length === 0 ? 'hidden' : 'block'}`
 
-    function formatToIDR(amount) {
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(amount);
-    }
+    const dispatch = useDispatch();
+    const cart = useSelector((state) => state.cart.items)
 
     const getCart = async () => {
-        const {data} = await axios.get(API_CART, {
-            headers: {
-                'Authorization': `Bearer ${API_ACCESS_TOKEN}`
-            }
-        })
-        setData(data)
+        const {data} = await apiClient.get('/api/cart');
+        setData(data);
     }
 
     const subTotal = () => {
@@ -35,36 +27,28 @@ const Cart = () => {
         setSum(sum)
     } 
 
-    const updateQtyIntoDB = async (data) => {
+    const updateQtyIntoDB = async (updatedData) => {
         try {
-            const result = await axios.put(API_CART, data, {
-                headers: {
-                    'Authorization': `Bearer ${API_ACCESS_TOKEN}`
-                }
-            })
+            await apiClient.put('/api/cart',  {items: updatedData})
         } catch (err) {
-            console.error('error :', err)
+            toast.error('Gagal menambahkan barang')
         }
     }
 
     const handleQty = async (product, action) => {
-            const updatedData = data.map(item => {
-                if(item._id === product._id) {
-                    const newQty = action === '+' ? item.qty + 1 : item.qty > 1 ? item.qty - 1 : item.qty;
-                    return {...item, qty: newQty}
-                }
-                return item;
-            }) 
-            setData(updatedData);
-            await updateQtyIntoDB(updatedData);
+        const updatedData = data.map(item => {
+            if(item._id === product._id) {
+                const newQty = action === '+' ? item.qty + 1 : item.qty > 1 ? item.qty - 1 : item.qty;
+                return {...item, qty: newQty}
+            }
+            return item;
+        }) 
+        await updateQtyIntoDB(updatedData);
+        getCart()
     }
 
     const handleDelete = async (item) => {
-        await axios.delete(`${API_CART}/${item._id}`, {
-            headers: {
-                'Authorization': `Bearer ${API_ACCESS_TOKEN}` 
-            }
-        })
+        await apiClient.delete(`/api/cart/${item._id}`)
         getCart()
     }
     

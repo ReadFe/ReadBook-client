@@ -1,16 +1,11 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { apiClient } from "../../utils/axios";
 
 const UserProfile = () => {
     const [user, setUser] = useState([])
 
-    const getData = async () => {
-        const token = localStorage.getItem('token');
-        const user = await axios.get('http://localhost:3000/auth/me', {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            }
-        })
+    const getData = async () => {   
+        const user = await apiClient.get('/auth/me')
         setUser(user.data);
     }
 
@@ -19,7 +14,7 @@ const UserProfile = () => {
     }, [])
 
     return(
-        <div className="h-[600px] overflow-auto">
+        <div className="sm:h-[600px] overflow-auto">
             <div className="profile-grid p-2 border-b-4 sticky top-0 bg-white">
                 <div className="font-semibold p-4">Profil</div>
             </div>

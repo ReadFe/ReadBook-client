@@ -1,7 +1,7 @@
-import { Outlet, useLocation } from "react-router-dom";
-import SelectAddress from "../../components/select-address";
-import Confirm from "../../components/confirm";
-import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import SelectAddress from "../select-address/SelectAddress";
+import Confirm from "../confirm/Confirm";
+import { useState } from "react";
 
 const Checkout = () => {
     const [address, setAddress] = useState();

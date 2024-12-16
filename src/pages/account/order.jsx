@@ -1,21 +1,16 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { formatToIDR } from "../../../utils";
+import { formatToIDR } from "../../utils/formatToIDR";
 import { useNavigate } from "react-router-dom";
+import { apiClient } from "../../utils/axios";
 
 const OrderList = () => {
     const [orders, setOrders] = useState([]);
     const [openIndex, setOpenIndex] = useState(null);
-    const API_URL_TOKEN = localStorage.getItem('token');
     const navigate = useNavigate();
 
     const getOrders = async () => {
         try {
-            const { data } = await axios.get('http://localhost:3000/api/orders', {
-                headers: {
-                    'Authorization': `Bearer ${API_URL_TOKEN}`
-                }
-            });
+            const { data } = await apiClient.get('/api/orders');
             setOrders(data.data);
         } catch (error) {
             console.error("Error fetching orders:", error);
@@ -35,7 +30,7 @@ const OrderList = () => {
     }, []);
 
     return (
-        <div className="h-[600px] overflow-auto">
+        <div className="w-[600px] sm:w-full">
             <div className="grid grid-cols-4 p-2 border-b-4 sticky top-0 bg-white z-10">
                 <div className="flex justify-center font-semibold p-4">Order ID</div>
                 <div className="flex justify-center font-semibold p-4">Total</div>

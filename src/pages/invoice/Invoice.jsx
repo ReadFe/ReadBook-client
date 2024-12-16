@@ -1,21 +1,17 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { formatToIDR } from "../../utils";
+import { formatToIDR } from "../../utils/formatToIDR";
+import { apiClient } from "../../utils/axios";
 
 const Invoice = () => {
     const location = useLocation();
     const id = location.state.id;
 
+    
     const [invoices, setInvoices] = useState(null);
-    const API_ACCESS_TOKEN = localStorage.getItem('token');
-
+    
     const getInvoices = async () => {
-        const {data} = await axios.get(`http://localhost:3000/api/invoices/${id}`, {
-            headers: {
-                'Authorization': `Bearer ${API_ACCESS_TOKEN}`
-            }
-        });
+        const {data} = await apiClient.get(`/api/invoices/${id}`);
         setInvoices(data);
     }
 
@@ -23,7 +19,7 @@ const Invoice = () => {
         const map = Object.values(invoices.delivery_address);
         const result = map.join(', ')
         return result;
-    }
+    }   
 
     useEffect(() => {
         getInvoices();

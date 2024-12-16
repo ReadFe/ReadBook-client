@@ -1,12 +1,11 @@
-import axios from 'axios';
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
+import { apiClient } from '../../utils/axios';
 
 function Confirm({address, subtotal}) {
 
-    const API_URL_ORDER = 'http://localhost:3000/api/orders';
-    const API_ACCESS_TOKEN = localStorage.getItem('token');
     const navigate = useNavigate();
+    
     let delivery_fee = 20000;
     let sum = delivery_fee + subtotal;
     let dataToPost = {
@@ -29,11 +28,7 @@ function Confirm({address, subtotal}) {
     }
 
     const handlePost = async () => {
-        const post = await axios.post(API_URL_ORDER, dataToPost, {
-            headers: {
-                'Authorization': `Bearer ${API_ACCESS_TOKEN}`
-            }
-        })
+        const post = await apiClient.post('/api/orders', dataToPost)
         const id = post.data._id
         if(post.status === 200) {
             navigate('/invoice', {state: {id}})

@@ -1,17 +1,14 @@
-// src/components/Login.js
-
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { apiClient } from '../../utils/axios';
 
 const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [error, setError] = useState('')
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const API_URL_LOGIN = 'http://localhost:3000/auth/login';
-  const API_URL_REGISTER = 'http://localhost:3000/auth/register';
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -19,23 +16,30 @@ const Register = () => {
     setIsLoading(true);
     setError('');
 
+    console.log({
+      email,
+      password,
+      full_name: name
+    })
     try {
-      await axios.post(API_URL_REGISTER, {
+      await apiClient.post(`/auth/register`, {
         email,
         password,
         full_name: name
       });
-      const response = await axios.post(API_URL_LOGIN, {
+      const response = await apiClient.post(`/auth/login`, {
         email,
         password,
       });
+
+      if(response) localStorage.setItem('token', response.data.token);
 
     if(response.status === 200) {
         localStorage.setItem('token', response.data.token);
         navigate('/dashboard/profile')
     }
     } catch (err) {
-      setError('Login gagal, Periksa kembali email dan password anda.');
+      toast.error('Login gagal, Periksa kembali email dan password anda.');
     } finally {
       setIsLoading(false);
     }

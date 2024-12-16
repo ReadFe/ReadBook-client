@@ -1,23 +1,23 @@
-import axios from "axios";
 import NewAddress from "./newAddress";
 import { useEffect, useState } from "react";
+import { apiClient } from "../../utils/axios";
+import { toast } from "react-toastify";
 
 const Address = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [address, setAddress] = useState([])
-    const API_ACCESS_TOKEN = localStorage.getItem('token')
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
     const getAddress = async () => {
-        const {data} = await axios.get('http://localhost:3000/api/delivery-addresses', {
-            headers: {
-                'Authorization': `Bearer ${API_ACCESS_TOKEN}`
-            }
-        });
-        setAddress(data);
+        try {
+            const {data} = await apiClient.get('/api/delivery-addresses');
+            setAddress(data);
+        } catch (error) {
+            toast.error('Ups! Terjadi kesalahan pada server. Mohon coba lagi nanti.')
+        }
     }
 
     useEffect(() => {
@@ -26,13 +26,15 @@ const Address = () => {
 
     return(
         <div className="h-[600px] overflow-auto">
-            <button
-                className="bg-main-color text-white py-1 px-3 m-2 rounded"
-                onClick={openModal}
-            >
+            <button className="bg-main-color text-white py-1 px-3 m-2 rounded" onClick={openModal}>
                 Tambah Alamat
             </button>
-            <NewAddress isOpen={isModalOpen} onClose={closeModal} getAddress={getAddress}/>
+
+            <NewAddress 
+                isOpen={isModalOpen} 
+                onClose={closeModal} 
+                getAddress={getAddress}
+            />
 
             <div className="address-grid p-2 border-b-4 sticky top-0 bg-white">
                 <div className="font-semibold p-4">Nama</div>

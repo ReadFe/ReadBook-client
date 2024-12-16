@@ -1,35 +1,30 @@
-// src/components/Login.js
-
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { apiClient } from '../../utils/axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const API_URL_LOGIN = 'http://localhost:3000/auth/login';
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
 
     try {
-      const response = await axios.post(API_URL_LOGIN, {
+      const response = await apiClient.post(`auth/login`, {
         email,
         password,
       });
-      if(navigate) {
         if(response.status === 200) {
-          localStorage.setItem('token', response.data.token);
-          navigate('/dashboard/profile')
+            localStorage.setItem('token', response.data.token);
+            navigate('/dashboard/profile')
         }
-      }
     } catch (err) {
-      setError('Login gagal, Periksa kembali email dan password anda.');
+      toast.error('Login gagal, Periksa kembali email dan password anda.');
     } finally {
       setIsLoading(false);
     }
@@ -68,7 +63,6 @@ const Login = () => {
         >
           {isLoading ? 'Logging in...' : 'Login'}
         </button>
-        {error && <p className="text-red-500 text-center mt-4">{error}</p>}
       </form>
       <div className='w-full text-center mt-5'>
         <a href="/register" className='text-[12px] border-b-2 border-black'>Buat Akun</a>

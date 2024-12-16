@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { apiClient } from "../../utils/axios";
 
 const NewAddress = ({ isOpen, onClose, getAddress }) => {
     const API_URL_LOCATION = 'https://www.emsifa.com/api-wilayah-indonesia/api';
-    const API_ACCESS_TOKEN = localStorage.getItem('token')
     
     
     const [form, setForm] = useState({
@@ -126,15 +127,13 @@ const NewAddress = ({ isOpen, onClose, getAddress }) => {
     };
 
     const handlePost = async () => {
-        await axios.post('http://localhost:3000/api/delivery-addresses', postForm,
-            {
-                headers: {
-                    'Authorization': `Bearer ${API_ACCESS_TOKEN}`
-                }
-            }
-        )
-        getAddress();
-        alert('Alamat Berhasil Disimpan')
+        try {
+            await apiClient.post('/api/delivery-addresses', postForm)
+            getAddress();
+            toast.success('Alamat Berhasil Disimpan');
+        } catch (error) {
+            toast.error('Gagal menyimpan alamat');
+        }
     }
 
     if (!isOpen) return null;
