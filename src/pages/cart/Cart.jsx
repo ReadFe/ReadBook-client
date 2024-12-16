@@ -4,15 +4,11 @@ import { formatToIDR } from "../../utils/formatToIDR";
 import { apiClient } from "../../utils/axios";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, fetchCart } from "../../store/counterCartSlice";
 
 const Cart = () => {
     const [data, setData] = useState([])
     const [sum, setSum] = useState()
     const buttonClass = `absolute bottom-3 right-2 bg-main-color text-white px-4 py-1 rounded ${data.length === 0 ? 'hidden' : 'block'}`
-
-    const dispatch = useDispatch();
-    const cart = useSelector((state) => state.cart.items)
 
     const getCart = async () => {
         const {data} = await apiClient.get('/api/cart');
