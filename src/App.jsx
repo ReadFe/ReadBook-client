@@ -13,18 +13,25 @@ import ProductDetail from './pages/productDetail/ProductDetail'
 import { ToastContainer } from 'react-toastify'
 import { useEffect } from 'react'
 import getProducts from './utils/getProducts'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { addProducts } from './store/productStore'
 
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    return async () => {
-      const {data} = await getProducts();
-      dispatch(addProducts(data))
-    }
-  }, [])
+    const fetchData = async () => {
+      try {
+        const { data } = await getProducts();
+        dispatch(addProducts(data));
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+  
+    fetchData();
+  }, [dispatch]);
+  
 
   return (
     <>
