@@ -17,8 +17,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addProducts } from './store/productStore'
 
 function App() {
-
-  const product = useSelector((state) => state.product.products)
   const dispatch = useDispatch();
 
   useEffect(() => {

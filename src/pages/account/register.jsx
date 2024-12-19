@@ -15,12 +15,6 @@ const Register = () => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-
-    console.log({
-      email,
-      password,
-      full_name: name
-    })
     try {
       await apiClient.post(`/auth/register`, {
         email,

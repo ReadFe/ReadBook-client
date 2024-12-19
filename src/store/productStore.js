@@ -12,8 +12,7 @@ const useProductStore = createSlice({
         },
         filteredTags : (state, action) => {
             const tag = action.payload;
-            console.log(state.products)
-            // const res = state.products.filter(val => val.tags.name.includes(tag))
+            state.products.filter(val => val.tags.name.includes(tag))
         }
     }
 });
